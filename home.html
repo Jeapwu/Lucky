@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>幸运抽奖</title>
+    <style type="text/css">
+        #demo{
+            width: 100%;
+            height: 100%;
+            background-image: url(./home.jpg);
+            position: absolute;
+            background-size: cover;
+        }
+
+        #prize_btn{
+            width: 200px;
+            height: 80px;
+            font-size: 42px;
+            position: absolute;
+            left: 900px;
+            top: 100px;
+        }
+
+        #prize_img{
+            width: 300px;
+            height: 300px;
+            position: absolute;
+            left: 350px;
+            top: 50px;
+            border-radius: 50%;
+        }
+
+        #prize_name{
+            position: absolute;
+            left: 310px;
+            top: 350px;
+            font-size: 58px;
+            text-align: center;
+        }
+
+
+        #prize_list{
+            width: 1200px;
+            height: 750px;
+            position: relative;
+            left: 400px;
+            top: 200px;
+            border: 1px solid #fff;
+            display: flex;
+        }
+
+        #prize_rand{
+            width: 1000px;
+            height: 600px;
+            background: rgba(0,0,0,0.5);
+            position: absolute;
+            left: 500px;
+            top: 300px;
+            border-radius: 20px;
+            color: #fff;
+            font-size: 58px;
+            text-align: center;
+            line-height: 100px;
+            display: none;
+        }
+
+        
+        .plist{
+            flex: 1;
+            background: rgba(190, 88, 41, 0.5);
+            margin: 5px;
+            border-radius: 10px;
+
+        }
+
+        .ptitle{
+            text-align: center;
+            font-size: 32px;
+            color: yellow;
+        }
+
+        .pol{
+            border: 1px solid #fff;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+        }
+        
+        .pli{
+            color: yellow;
+            font-size: 32px;
+            text-align: center;
+        }
+    </style>
+    
+</head>
+<body> 
+    <div id="demo"> 
+        <div>
+            <button id="prize_btn" type="button" onclick="checkOk()">开始抽奖</button>
+        </div>
+       
+        <div id="prize_list"></div>
+        <div id="prize_rand">
+            <img id="prize_img" src="./img/张三.jpg">
+            <p id="prize_name">中奖嘉宾: 张三</p>
+        </div>
+    </div>
+   
+    <script typt="text/javascript">
+        // 初始化变量
+        var rnd_id=-1,rnd_stu='',count=0;
+        var prize_index=0,prize_count=0;
+        var ttimer;
+        var name;
+        var len=0;
+        var sum=0;
+        var index=0;
+        var dump_str=''
+
+        
+        // 结构化人员名单
+        var stu_str={
+            "0": "刘易峰.jpg",
+            "1": "唐嫣.jpg",
+            "2": "张三.jpg",
+            "3": "张靓颖.jpg",
+            "4": "彭于晏.jpg",
+            "5": "易烊千玺.jpg",
+            "6": "朱茵.jpg",
+            "7": "李四.jpg",
+            "8": "李沁.jpg",
+            "9": "杨幂.jpg",
+            "10": "杨紫.jpg",
+            "11": "王五.jpg",
+            "12": "肖战.jpg",
+            "13": "胡歌.jpg",
+            "14": "蔡徐坤.jpg",
+            "15": "赵丽颖.jpg",
+            "16": "赵六.jpg",
+            "17": "迪丽热巴.jpg",
+            "18": "郑轮.jpg",
+            "19": "陈奕迅.jpg"
+        }
+
+        for(var obj in stu_str){
+            len++;
+        }
+
+        // 预设奖项
+        var prizes=[['一等奖',1],['二等奖',3],['三等奖',5]];
+
+        prizes.forEach((p,i)=>{
+            let div=document.createElement('div');
+            div.className='plist'
+                let ptitle=document.createElement('div')
+                ptitle.className='ptitle';
+                ptitle.innerHTML=p[0];
+                sum=sum+p[1];
+                div.appendChild(ptitle)
+                let plist=document.createElement('o1')
+                plist.id='prize-'+i
+                plist.className='pol'
+                div.appendChild(plist)
+            prize_list.appendChild(div)
+        })
+
+        dump_str=dump_str+prizes[prize_index][0]+':'+'\n'       
+
+        function checkOk(){
+            if(sum>len){
+                alert('奖项数目超出参赛人数')
+                return
+            }
+            if(prize_btn.innerHTML=="开始抽奖"){
+                prize_btn.innerHTML="确定"
+                prize_rand.style.display='block'
+                ttimer=setInterval(()=>{
+                        prize_rand.style.display='block'
+                        rnd_id=~~(Math.random()*(len-count)+count)
+                        rnd_stu=stu_str[rnd_id];
+                        stu_str[rnd_id]=stu_str[count]
+                        stu_str[count]=rnd_stu
+                        document.getElementById("prize_img").src="./img/"+rnd_stu
+                        name=rnd_stu.split('.')[0]
+                        document.getElementById("prize_name").innerHTML="中奖嘉宾: "+ name
+                    },30)
+            }else{
+                prize_btn.innerHTML="开始抽奖"
+                count++
+                index++
+                let pol=document.querySelector("#prize-"+prize_index)
+                let pli=document.createElement('li')
+                pli.className='pli'
+                pli.innerHTML=index+'. '+name;     
+                dump_str=dump_str+index+'. '+name+'\n'
+                pol.appendChild(pli)
+                prize_count++
+                
+                if(prize_count>=14){
+                    pol.removeChild(pol.childNodes[0])
+                }
+
+                if(prize_count>=prizes[prize_index][1]){      
+                    prize_index++
+                    if(prize_index<prizes.length){
+                        dump_str=dump_str+prizes[prize_index][0]+':'+'\n' 
+                    }               
+                    prize_count=0
+                    index=0
+                }
+                if(prize_index>=prizes.length){
+                    prize_btn.removeAttribute('onclick')
+                    prize_btn.innerHTML="抽奖结束"
+                    dump('prize.txt',dump_str)
+
+                }               
+                clearInterval(ttimer)
+                prize_rand.style.display='none'
+            }
+
+        }
+        
+
+        function fakeClick(obj) {
+            var ev = document.createEvent("MouseEvents");
+            ev.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+            obj.dispatchEvent(ev);
+        }
+
+        function dump(name, data) {
+            var urlObject = window.URL || window.webkitURL || window;
+            var export_blob = new Blob([data]);
+            var save_link = document.createElementNS("http://www.w3.org/1999/xhtml", "a")
+            save_link.href = urlObject.createObjectURL(export_blob);
+            save_link.download = name;
+            fakeClick(save_link);
+        } 
+
+
+
+
+    </script>
+
+</body>
+</html>
